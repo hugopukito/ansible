@@ -1,0 +1,8 @@
+---
+- name: This is a hello-world example
+  hosts: dockerUbuntu
+  tasks:
+    - name: Create a file.
+      copy:
+        content: hello worldn
+        dest: ~/testfile.txt
