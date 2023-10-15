@@ -18,25 +18,6 @@ docker run --name ubuntu -d ubuntu
 docker exec -it ubuntu /bin/bash
 ```
 
-### Retrieve ip of container
-
-```bash
-hostname -I
-```
-
-Now do an "exit" to get on your local machine.
-
-```bash
-sudo nano /etc/ansible/hosts
-```
-
-Add this :
-
-[servers] dockerUbuntu ansible_host=172.17.0.2
-[all:vars] ansible_python_interpreter=/usr/bin/python3
-
-Replace 172.17.0.2 by the ip of your container. (Normally it's the same)
-
 ### Enable ssh
 
 ```bash
@@ -66,6 +47,27 @@ passwd root
 ```
 
 Now set the password you want, when you will launch a playbook, it will be ask.
+
+### Retrieve ip of container
+
+```bash
+hostname -I
+```
+
+Now do an "exit" to get on your local machine.
+
+```bash
+sudo nano /etc/ansible/hosts
+```
+
+Add this :
+
+```
+[servers] dockerUbuntu ansible_host=172.17.0.2
+[all:vars] ansible_python_interpreter=/usr/bin/python3
+```
+
+Replace 172.17.0.2 by the ip of your container. (Normally it's the same)
 
 ## Ping ssh
 
