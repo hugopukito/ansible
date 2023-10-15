@@ -1,4 +1,4 @@
-# Ansible
+# Ansible on docker ubuntu image
 
 ## Install Ansible
 
@@ -19,7 +19,10 @@ docker build -t ubuntu-ssh .
 
 ### Run
 
-docker run --name ubuntu-ssh -d ubuntu-ssh
+docker run --name ubuntu-ssh -d --privileged ubuntu-ssh /usr/sbin/init
+
+--privileged and /usr/sbin/init will make systemctl working.
+-> https://stackoverflow.com/questions/59466250/docker-system-has-not-been-booted-with-systemd-as-init-system
 
 ### Retrieve ip of container
 
@@ -35,7 +38,7 @@ ssh test@172.17.0.2
 
 password: 'test' (set in Dockerfile)
 
-## Create ansible host
+## Add python interpreter (optional)
 
 Now do an "exit" to get on your local machine.
 
@@ -46,9 +49,6 @@ sudo nano /etc/ansible/hosts
 Add this :
 
 ```
-[servers]
-dockerUbuntu ansible_host=172.17.0.2
-
 [all:vars]
 ansible_python_interpreter=/usr/bin/python3
 ```
@@ -73,8 +73,14 @@ password: 'test' (set in Dockerfile)
 
 ## Use playbook
 
+### Install docker, add user in docker group and install docker compose on the target
+
 ```ansible
-ansible-playbook -i inventory HelloWorld.yml -u test -k
+ansible-playbook -i inventory Docker/Docker.yml Docker/DockerGroup.yml Docker/DockerGroup.yml Docker/Dockercompos_.yml -u test -kK
 ```
 
+-kK will make root working
+-> https://stackoverflow.com/questions/25582740/missing-sudo-password-in-ansible
+
 password: 'test' (set in Dockerfile)
+

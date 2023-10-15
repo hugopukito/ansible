@@ -1,0 +1,31 @@
+---
+- name: Install Docker Compose
+  hosts: dockerUbuntu
+  become: yes
+  tasks:
+    - name: Get the latest Docker Compose version
+      uri:
+        url: https://api.github.com/repos/docker/compose/releases/latest
+        method: GET
+        return_content: yes
+      register: github_release
+
+    - name: Set Docker Compose version
+      set_fact:
+        docker_compose_version: "{{ github_release.json.tag_name | regex_replace('^v', '') }}"
+      when: github_release.status == 200
+
+    - name: Download Docker Compose
+      shell: >
+        curl -L "https://github.com/docker/compose/releases/download/{{ docker_compose_version }}/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+      args:
+        creates: /usr/local/bin/docker-compose
+      notify: Set Docker Compose Permissions
+
+    - name: Verify Docker Compose installation
+      command: docker compose --version
+
+  handlers:
+    - name: Set Docker Compose Permissions
+      command: chmod +x /usr/local/bin/docker-compose
+      changed_when: false
